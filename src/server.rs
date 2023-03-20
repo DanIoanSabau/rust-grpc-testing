@@ -18,20 +18,20 @@ impl Bitcoin for BitcoinService {
         let request: BitcoinPaymentRequest = request.into_inner();
         let response = BitcoinPaymentResponse {
             successful: true,
-            message: format!("sending {}BTC to {}", request.amount, request.to_addr)
+            message: format!("sending {}BTC to {}", request.amount, request.to_addr.into())
         };
 
-        Ok(tonic::Response::new(response))
+        Ok(Response::new(response))
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let bitcoin_serice = BitcoinService::default();
+    let bitcoin_service = BitcoinService::default();
 
     Server::builder()
-        .add_service(BitcoinServer::new(bitcoin_serice))
+        .add_service(BitcoinServer::new(bitcoin_service))
         .serve(addr)
         .await?;
 
